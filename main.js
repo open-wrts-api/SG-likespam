@@ -3,6 +3,7 @@ const gebruikersnaam = process.env.USERNAME;
 const wachtwoord = process.env.PASSWORD;
 const sg_ofset = process.env.OFFSET;
 const wacht = process.env.WAIT;
+const cooldown_in_min = process.env.COOLDOWN;
 let token_vernieuwen_datum;
 let token;
 
@@ -73,6 +74,10 @@ async function main() {
         await like(antwoord.id, token);
         await new Promise(resolve => setTimeout(resolve, wacht));
     }
+
+    // loop
+    await new Promise(resolve => setTimeout(resolve, cooldown_in_min * 60 * 1000));
+    main();
 }
 
 main();
