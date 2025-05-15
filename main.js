@@ -46,7 +46,9 @@ async function like(id, token) {
     });
 }
 async function main() {
+    console.log("token ophalen...");
     token = await get_token();
+    console.log("forum ophalen...");
     const forum = await fetch("https://api.wrts.nl/api/v3/public/qna/questions", {
         "credentials": "omit",
         "headers": {
@@ -56,7 +58,7 @@ async function main() {
         "method": "GET",
         "mode": "cors"
     });
-
+    console.log("vraag ophalen...");
     const forum_data = await forum.json();
     const forum_item = await fetch("https://api.wrts.nl/api/v3/public/qna/questions/" + forum_data.results[sg_ofset].id, {
         "credentials": "omit",
@@ -70,12 +72,14 @@ async function main() {
     const forum_item_data = await forum_item.json();
     const qna = forum_item_data.qna_question;
     const antworden = await qna.other_qna_answers;
+    console.log("likes sturen...");
     for (const antwoord of antworden) {
         await like(antwoord.id, token);
         await new Promise(resolve => setTimeout(resolve, wacht));
     }
 
     // loop
+    console.log("cooldown begint");
     await new Promise(resolve => setTimeout(resolve, cooldown_in_min * 60 * 1000));
     main();
 }
